@@ -114,19 +114,19 @@ maj7Down = {"distance": -11, "name": "major seventh below"}
 #Overtone Series
 over1 = {"pitch": 0, "name": "First Overtone"}
 over2 = {"pitch": 7, "name": "Second Overtone"}
-over3 = {"pitch": 0, "name": "Third Overtone"}
-over4 = {"pitch": 4, "name": "Fourth Overtone"}
-over5 = {"pitch": 7, "name": "Fifth Overtone"}
-over6 = {"pitch": 10, "name": "Sixth Overtone"}
-over7 = {"pitch": 0, "name": "Seventh Overtone"}
-over8 = {"pitch": 2, "name": "Eighth Overtone"}
-over9 = {"pitch": 4, "name": "Ninth Overtone"}
-over10 = {"pitch":6, "name": "Tenth Overtone"}
-over11 = {"pitch": 7, "name": "Eleventh Overtone"}
-over12 = {"pitch": 9, "name": "Twelfth Overtone"}
-over13 ={"pitch": 10, "name": "Thirteenth Overtone"}
-over14 ={"pitch": 11, "name": "Fourteenth Overtone"}
-over15={"pitch": 0, "name": "Fifteenth Overtone"}
+over3 = {"pitch": 0+12, "name": "Third Overtone"}
+over4 = {"pitch": 4+12, "name": "Fourth Overtone"}
+over5 = {"pitch": 7+12, "name": "Fifth Overtone"}
+over6 = {"pitch": 10+12, "name": "Sixth Overtone"}
+over7 = {"pitch": 0+24, "name": "Seventh Overtone"}
+over8 = {"pitch": 2 + 24, "name": "Eighth Overtone"}
+over9 = {"pitch": 4 + 24, "name": "Ninth Overtone"}
+over10 = {"pitch":6 + 24, "name": "Tenth Overtone"}
+over11 = {"pitch": 7 + 24, "name": "Eleventh Overtone"}
+over12 = {"pitch": 9 + 24, "name": "Twelfth Overtone"}
+over13 ={"pitch": 10 + 24, "name": "Thirteenth Overtone"}
+over14 ={"pitch": 11 + 24, "name": "Fourteenth Overtone"}
+over15={"pitch": 0 + 36, "name": "Fifteenth Overtone"}
 
 
 #partials
@@ -427,17 +427,15 @@ def convertToNoteName(pitchNumber):
 def clefMath(clefLoc1, clefName1, clefLoc2, clefName2, clef1Number, clef2Number ):
     print("What is the interval between", clefLoc1, "of the", clefName1, "clef staff and the", clefLoc2,
           "of the", clefName2, "clef staff if you reduce the interval? (P4, m2, M3, etc)")
-    answer = abs(clef2Number - clef1Number)%12#Import to have the "lower clef" subracted FROM the "highe clef"
+    answer = abs(clef2Number - clef1Number)%12
     userAnswer = input()
     userAnswer = intervalNameToHalfSteps(userAnswer)
-    print(userAnswer)
-    print("clef2:", clef2Number)
-    print("clef1:", clef1Number)
     if answer == userAnswer:
         print("Your answer was correct")
     else:
         print("Your answer was incorrect")
     print("The answer was", intervalToName(answer))
+
 #bass and treble math
 
 def overMath(distanceName, overName, rootName, distanceNumber, overNumber, rootNumber):
@@ -498,8 +496,48 @@ def scaleBlitz(scaleDegree, root, scaleDegreeName, rootPitch):
         print("Your answer is incorrect")
     print("The answer was:", convertToNoteName(answer))
 
+def layeredScaleOvertone(distance, overDegreeName, root, distanceNumber, overDegreeNumber, rootNumber):
+    print("The note a",distance, "the", overDegreeName, "of", root,)
+    answer = (distanceNumber + overDegreeNumber + rootNumber)%12
+    userAnswer = input()
+    userAnswer = userAnswer.capitalize()
+    convertedUser = convertToPitchNumber(userAnswer)
+    if answer == convertedUser:
+        print("Your answer is correct")
+    else:
+        print("Your answer is incorrect")
+    print("The answer was:", convertToNoteName(answer))
+
+#Asks for a note a specific interval above or below a note located on a given clef
+def intervalClef(distance, lineSpaceName, clefName, distanceNumber, clefNumber):
+    print("The note a",distance, "the", lineSpaceName, "of the", clefName, "clef")
+    answer = (distanceNumber + clefNumber)%12
+    userAnswer = input()
+    userAnswer = userAnswer.capitalize()
+    convertedUser = convertToPitchNumber(userAnswer)
+    if answer == convertedUser:
+        print("Your answer is correct")
+    else:
+        print("Your answer is incorrect")
+    print("The answer was:", convertToNoteName(answer))
+
+#Asks for the interval between a note on a given clef and an overtone above a given note.
+def clefOvertoneInterval(clefLoc1, clefName1, overName, root, clef1Number, overNumber, rootNumber):
+    print("What is the interval between", clefLoc1, "of the", clefName1, "clef and the",overName,
+          "above the fundamental",root, "if you reduce the interval? (P4, m2, M3, etc)")
+    answer = abs((overNumber+rootNumber) - clef1Number)%12
+    userAnswer = input()
+    userAnswer = intervalNameToHalfSteps(userAnswer)
+    if answer == userAnswer:
+        print("Your answer was correct")
+    else:
+        print("Your answer was incorrect")
+    print("The answer was", intervalToName(answer))
+
+
+
 #Set up a call for the question, randomly selected. THE VALUE OF THE SECOND NUMBER PARAMETER NEEDS TO BE UPDATED WITH EACH NEW QUESTION
-randomQuestion = randint(0, 26)
+randomQuestion = randint(0, 35)
 
 
 #scale blitz on major scale
@@ -600,6 +638,41 @@ elif randomQuestion == 25:
 elif randomQuestion == 26:
     clefMath(randTenorClef["location"], randTenorClef["clef"], randAltoClef["location"], randAltoClef["clef"],
              randTenorClef["pitch"], randAltoClef["pitch"])
+#layered scale and overtone math
+elif randomQuestion == 27:
+    layeredScaleOvertone(randDirections["name"], randOvertones["name"], randChromaticPitches["name"], randDirections["distance"],
+                        randOvertones["pitch"], randChromaticPitches["pitch"])
+#intervals from bass clef
+elif randomQuestion == 28:
+    intervalClef(randDirections["name"], randBassClef["location"], randBassClef["clef"], randDirections["distance"], randBassClef["pitch"])
 
+#intervals from treble clef
+elif randomQuestion == 29:
+    intervalClef(randDirections["name"], randTrebleClef["location"], randTrebleClef["clef"], randDirections["distance"], randTrebleClef["pitch"])
+#intervals from alto clef
+elif randomQuestion == 30:
+    intervalClef(randDirections["name"], randAltoClef["location"],randAltoClef["clef"], randDirections["distance"], randAltoClef["pitch"])
 
+#intervals from the tenor clef
+elif randomQuestion == 31:
+    intervalClef(randDirections["name"], randTenorClef["location"], randTenorClef["clef"], randDirections["distance"], randTenorClef["pitch"])
 
+#Interval between bass clef and a note in the overtone series
+elif randomQuestion == 32:
+    clefOvertoneInterval(randBassClef["location"],randBassClef["clef"], randOvertones["name"],randChromaticPitches["name"], randBassClef["pitch"],
+                         randOvertones["pitch"], randChromaticPitches["pitch"] )
+
+#Interval between treble clef and a note in the overtone series
+elif randomQuestion == 33:
+    clefOvertoneInterval(randTrebleClef["location"], randTrebleClef["clef"], randOvertones["name"], randChromaticPitches["name"], randTrebleClef["pitch"],
+                         randOvertones["pitch"], randChromaticPitches["pitch"])
+
+#Interval between alto clef and a note in the overtone series
+elif randomQuestion == 34:
+    clefOvertoneInterval(randAltoClef["location"], randAltoClef["clef"], randOvertones["name"], randChromaticPitches["name"], randAltoClef["pitch"],
+                         randOvertones["pitch"], randChromaticPitches["pitch"])
+
+#Interval between tenor clef note and a note in the overtone series
+elif randomQuestion == 35:
+    clefOvertoneInterval(randTenorClef["location"], randTenorClef["clef"], randOvertones["name"], randChromaticPitches["name"], randTenorClef["pitch"],
+                         randOvertones["pitch"], randChromaticPitches["pitch"])
